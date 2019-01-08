@@ -12,12 +12,14 @@ import threading
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import MessageHandler, Filters
 
-def add_record(channel_id, msg_id, message):
+def add_record(channel_id, msg_id, message, anonymous):
     user = message.from_user
     username = user.username
     name = user.first_name
     if user.last_name:
         name += " " + user.last_name
+    if anonymous:
+        name = ''
     date = message.date.strftime("%Y-%m-%d %H:%M:%S")
 
     msg_type = "text"
@@ -72,6 +74,10 @@ def update_comments(bot, channel_id, msg_id):
         InlineKeyboardButton(
             helper_global.value("add_comment", "Add Comment"),
             url="http://telegram.me/%s?start=add_%d_%d" % (helper_global.value('bot_username', ''), channel_id, msg_id)
+        ),
+        InlineKeyboardButton(
+            helper_global.value("add_anonymous_comment", "Add Anonymous Comment"),
+            url="http://telegram.me/%s?start=addanonymous_%d_%d" % (helper_global.value('bot_username', ''), channel_id, msg_id)
         ),
         InlineKeyboardButton(
             helper_global.value("show_all_comments", "Show All"),
@@ -134,12 +140,14 @@ def private_msg(bot, update):
     params = args.split(",")
     channel_id = int(params[0])
     msg_id = int(params[1])
+    if len(params) >= 3 and params[2] == '3':
+        anonymous = True
     if channel_id == 0:
         if msg_id == 1:
             check_channel_message(bot, message)
         return
 
-    add_record(channel_id, msg_id, message)
+    add_record(channel_id, msg_id, message, anonymous)
 
     # Update Dirty List
     lock.acquire()

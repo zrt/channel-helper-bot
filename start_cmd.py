@@ -22,6 +22,9 @@ def start(bot, update, args):
     if params[0] == "add":
         helper_global.assign(str(chat_id) + "_status", params[1] + "," + params[2])
         bot.send_message(chat_id=update.message.chat_id, text=helper_global.value("start_comment_mode", ""))
+    elif params[0] == 'addanonymous':
+        helper_global.assign(str(chat_id) + "_status", params[1] + "," + params[2] + "," +"3")
+        bot.send_message(chat_id=update.message.chat_id, text=helper_global.value("start_comment_mode", ""))
     elif params[0] == "show":
         offset = 0
         config = helper_database.get_channel_config(channel_id)
