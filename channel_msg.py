@@ -11,7 +11,7 @@ import telegram
 from telegram.ext import MessageHandler, Filters, BaseFilter
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-def add_comment(bot, chat_id, message_id):
+def add_comment(bot, chat_id, message_id, msg_content):
     # Prepare Keyboard
     motd_keyboard = [[
         InlineKeyboardButton(
@@ -37,13 +37,37 @@ def add_comment(bot, chat_id, message_id):
 
     comment_message = bot.send_message(
         chat_id=chat_id, 
-        text=helper_global.records_to_str(records), 
+        text=msg_content+'\n'+helper_global.records_to_str(records), 
         reply_to_message_id=message_id,
         reply_markup=motd_markup, 
         parse_mode=telegram.ParseMode.HTML
     ).result()
     helper_database.add_reflect(chat_id, message_id, comment_message.message_id)
 
+
+def get_msg_content_short(message):
+    msg_content = ""
+    if message.text:
+        msg_content = message.text
+    elif message.sticker:
+        if message.sticker.emoji:
+            msg_content = message.sticker.emoji
+    elif message.photo:
+        if message.caption:
+            msg_content = message.caption
+    elif message.video:
+        if message.caption:
+            msg_content = message.caption
+    elif message.document:
+        if message.document.file_name:
+            msg_content = message.document.file_name
+    elif message.audio:
+        if message.audio.title:
+            msg_content = message.audio.title
+    if len(msg_content) < 15:
+        return msg_content
+    else:
+        return msg_content[:15]+'...'
 
 def channel_post_msg(bot, update):
     message = update.channel_post
@@ -57,13 +81,13 @@ def channel_post_msg(bot, update):
 
     # Auto Comment Mode
     if mode == 1: 
-        add_comment(bot, chat_id, message_id)
+        add_comment(bot, chat_id, message_id, get_msg_content_short(message))
 
     # Manual Mode
     elif mode == 0 and message.reply_to_message is not None and message.text == "/comment":
         message_id = message.reply_to_message.message_id
         bot.delete_message(chat_id=chat_id, message_id=message.message_id)
-        add_comment(bot, chat_id, message_id)
+        add_comment(bot, chat_id, message_id, get_msg_content_short(message))
 
 
 class FilterChannelPost(BaseFilter):
