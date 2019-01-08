@@ -20,7 +20,7 @@ def add_comment(bot, chat_id, message_id):
         ),
         InlineKeyboardButton(
             helper_global.value("add_anonymous_comment", "Add Anonymous Comment"),
-            url="http://telegram.me/%s?start=addanonymous_%d_%d" % (helper_global.value('bot_username', ''), channel_id, msg_id)
+            url="http://telegram.me/%s?start=addanonymous_%d_%d" % (helper_global.value('bot_username', ''), chat_id, message_id)
         ),
         InlineKeyboardButton(
             helper_global.value("show_all_comments", "Show All"),
