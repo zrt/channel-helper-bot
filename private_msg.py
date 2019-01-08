@@ -19,7 +19,7 @@ def add_record(channel_id, msg_id, message, anonymous):
     if user.last_name:
         name += " " + user.last_name
     if anonymous:
-        name = ''
+        name = 'nobody'
     date = message.date.strftime("%Y-%m-%d %H:%M:%S")
 
     msg_type = "text"
