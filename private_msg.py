@@ -140,6 +140,7 @@ def private_msg(bot, update):
     params = args.split(",")
     channel_id = int(params[0])
     msg_id = int(params[1])
+    anonymous = False
     if len(params) >= 3 and params[2] == '3':
         anonymous = True
     if channel_id == 0:
