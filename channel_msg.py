@@ -87,7 +87,7 @@ def channel_post_msg(bot, update):
     elif mode == 0 and message.reply_to_message is not None and message.text == "/comment":
         message_id = message.reply_to_message.message_id
         bot.delete_message(chat_id=chat_id, message_id=message.message_id)
-        add_comment(bot, chat_id, message_id, get_msg_content_short(message))
+        add_comment(bot, chat_id, message_id, '')
 
 
 class FilterChannelPost(BaseFilter):
