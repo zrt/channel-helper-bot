@@ -64,10 +64,10 @@ def get_msg_content_short(message):
     elif message.audio:
         if message.audio.title:
             msg_content = message.audio.title
-    if len(msg_content) < 15:
+    if len(msg_content) < 30:
         return msg_content
     else:
-        return msg_content[:15]+'...'
+        return msg_content[:30]+'...'
 
 def channel_post_msg(bot, update):
     message = update.channel_post
